@@ -1,0 +1,22 @@
+{
+  "name": "ygo-cdb-editor",
+  "version": "0.1.0",
+  "description": "游戏王 CDB 编辑器（移动端优先，Capacitor 打包为 Android）",
+  "private": true,
+  "scripts": {
+    "start": "python -m http.server 8137 --directory www",
+    "sync": "npx cap sync",
+    "add:android": "npx cap add android",
+    "build:android": "npx cap build android",
+    "open:android": "npx cap open android"
+  },
+  "dependencies": {
+    "@capawesome/capacitor-file-picker": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "typescript": "^5.9.3"
+  }
+}

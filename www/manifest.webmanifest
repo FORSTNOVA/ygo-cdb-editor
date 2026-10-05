@@ -1,0 +1,25 @@
+{
+  "name": "YGO · CDB 编辑器",
+  "short_name": "CDB 编辑器",
+  "description": "游戏王 .cdb 卡库浏览器/编辑器",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e0f17",
+  "theme_color": "#1b1d29",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

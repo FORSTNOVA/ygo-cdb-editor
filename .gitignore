@@ -1,0 +1,20 @@
+node_modules/
+android/app/build/
+android/.gradle/
+android/local.properties
+.idea/
+*.iml
+.DS_Store
+.workbuddy/
+# 本地工作副本（若将来接真实写回，勿提交）
+cards.local.cdb
+# 临时调试 / 测试产物
+_*.txt
+_*.js
+# 遗留旧版 Python 后端（已被 www/ + sql.js 客户端方案取代）
+server.py
+
+# Locally supplied game data and generated names
+www/cards.cdb
+www/setnames.js
+__pycache__/

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1b1d29" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <title>YGO · CDB 编辑器</title>
+  <link rel="stylesheet" href="styles.css?v=20260923a" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-bar">
+      <div class="app-bar-title">YGO · CDB 编辑器</div>
+      <div class="app-bar-actions">
+        <button class="app-bar-action" id="btnNewFile">新建文件</button>
+        <button class="app-bar-action" id="btnOpen">打开</button>
+        <button class="app-bar-action" id="btnExportCdb">保存cdb</button>
+        <button class="app-bar-action" id="btnExport">导出</button>
+      </div>
+    </header>
+
+    <!-- 文档页签：内置库 / 打开的文件 / 新建文件 -->
+    <div class="tabbar" id="tabbar" style="display:none"></div>
+
+    <div class="search-bar">
+      <input id="searchInput" placeholder="搜索卡名 / 描述…" />
+      <select id="filterKind">
+        <option value="">全部</option>
+        <option value="monster">怪兽</option>
+        <option value="spell">魔法</option>
+        <option value="trap">陷阱</option>
+        <optgroup label="─ 怪兽 ─">
+          <option value="monster:normal">怪兽 · 通常</option>
+          <option value="monster:effect">怪兽 · 效果</option>
+          <option value="monster:ritual">怪兽 · 仪式</option>
+          <option value="monster:fusion">怪兽 · 融合</option>
+          <option value="monster:synchro">怪兽 · 同调</option>
+          <option value="monster:xyz">怪兽 · XYZ</option>
+          <option value="monster:link">怪兽 · 连接</option>
+          <option value="monster:pendulum">怪兽 · 灵摆</option>
+          <option value="monster:tuner">怪兽 · 调整</option>
+          <option value="monster:union">怪兽 · 联合</option>
+          <option value="monster:dual">怪兽 · 二重</option>
+          <option value="monster:flip">怪兽 · 反转</option>
+          <option value="monster:token">怪兽 · 衍生</option>
+        </optgroup>
+        <optgroup label="─ 魔法 ─">
+          <option value="spell:normal">魔法 · 通常</option>
+          <option value="spell:quickplay">魔法 · 速攻</option>
+          <option value="spell:continuous">魔法 · 永续</option>
+          <option value="spell:equip">魔法 · 装备</option>
+          <option value="spell:field">魔法 · 场地</option>
+          <option value="spell:ritual">魔法 · 仪式</option>
+        </optgroup>
+        <optgroup label="─ 陷阱 ─">
+          <option value="trap:normal">陷阱 · 通常</option>
+          <option value="trap:counter">陷阱 · 反击</option>
+          <option value="trap:continuous">陷阱 · 永续</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="status-row">
+      <span id="status" class="status">正在初始化…（若停留在此，说明 JS 未执行完；空白纯黑说明 HTML/CSS 未加载）</span>
+      <button id="btnResetDb" class="status-btn" style="display:none">恢复内置卡库</button>
+    </div>
+
+    <main class="content" id="grid"><div class="empty">正在加载卡库…</div></main>
+
+    <nav class="bottom-nav">
+      <button data-nav="list" class="active">卡库</button>
+      <button data-nav="search">搜索</button>
+      <button id="btnNew">＋</button>
+    </nav>
+  </div>
+
+  <input type="file" id="fileInput" accept=".cdb" style="display:none" />
+
+  <div class="sheet-mask" id="sheetMask"></div>
+  <div class="sheet" id="sheet"></div>
+
+  <!-- ＋菜单（页签栏末尾的＋弹出） -->
+  <div class="plus-mask" id="plusMask"></div>
+  <div class="plus-menu" id="plusMenu">
+    <button id="pmNew">新建文件</button>
+    <button id="pmOpen">打开文件…</button>
+    <button id="pmBuiltin">内置卡库</button>
+    <button id="pmFolder">选择库文件夹…</button>
+    <button id="pmRefreshLib">刷新卡库</button>
+    <button id="pmImportLib">导入官方卡库…</button>
+    <button id="pmIdRange">卡密范围…</button>
+  </div>
+
+  <script>
+    // 启动错误浮层：设备 webview 上任何 JS 报错都直接显示在屏幕上，便于排查黑屏
+    (function () {
+      function show(msg) {
+        var el = document.getElementById('__bootErr') || document.createElement('pre');
+        el.id = '__bootErr';
+        el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;margin:0;background:#ffe8e8;color:#a11;font-size:11px;line-height:1.5;padding:8px;white-space:pre-wrap;word-break:break-all;max-height:55vh;overflow:auto';
+        el.textContent += msg + '\n';
+        if (document.body) document.body.appendChild(el);
+        else document.addEventListener('DOMContentLoaded', function () { document.body.appendChild(el); });
+      }
+      window.addEventListener('error', function (e) {
+        show('[error] ' + (e.message || 'unknown') + '\n  at ' + (e.filename || '?') + ':' + (e.lineno || '?') + ':' + (e.colno || '?'));
+      });
+      window.addEventListener('unhandledrejection', function (e) {
+        var r = e.reason;
+        show('[promise] ' + ((r && (r.stack || r.message)) || String(r)));
+      });
+    })();
+  </script>
+  <script src="vendor/sql-wasm.js?v=20260912e"></script>
+  <script src="cdb.js?v=20260923a"></script>
+  <script src="data.js?v=20260912e"></script>
+  <script src="setnames.js?v=20260923b"></script>
+  <script src="db-client.js?v=20260923a"></script>
+  <script src="capacitor-bridge.js?v=20260912l"></script>
+  <script src="app.js?v=20260923b"></script>
+</body>
+</html>

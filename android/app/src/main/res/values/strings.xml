@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">YGO CDB 编辑器</string>
+    <string name="title_activity_main">YGO CDB 编辑器</string>
+    <string name="package_name">com.ygo.cdbeditor</string>
+    <string name="custom_url_scheme">com.ygo.cdbeditor</string>
+</resources>
